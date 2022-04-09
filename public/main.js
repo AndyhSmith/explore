@@ -49,6 +49,7 @@ function userClick(e) {
 
   objects[socket.id].xSpeed = Math.sin(angle) * 10;
   objects[socket.id].ySpeed = Math.cos(angle) * 10;
+  socket.emit('entity update', objects[socket.id]);
 }
 
 const update = () => {
