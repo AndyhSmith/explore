@@ -140,6 +140,7 @@ socket.on('chat message', function(msg) {
 
 socket.on('entity update', function(data) {
   if (data.id != socket.id) {
+    console.log("Not happending")
     objects[data.id] = data
   }
 });
