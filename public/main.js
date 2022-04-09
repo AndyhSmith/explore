@@ -27,62 +27,63 @@ const player = {
   id: 0,
   x: 0,
   y: 0,
+  xSpeed: 0,
+  ySpeed: 0,
 };
 
 const playerData = {
   targeting: false,
   tX: 0,
   tY: 0,
-  xSpeed: 0,
-  ySpeed: 0,
-
 }
 
 // objects[player.id] = player
 
 function userClick(e) {
+  console.log("New Target")
   playerData.tX = e.x;
   playerData.tY = e.y;
   playerData.targeting = true;
 
-  let deltaX = playerData.tX - player.x
-  let deltaY = playerData.tY - player.y
+  let deltaX = playerData.tX - objects[socket.id].x
+  let deltaY = playerData.tY - objects[socket.id].y
   let angle = Math.atan2(deltaX, deltaY)
 
-  playerData.xSpeed = Math.sin(angle) * 10;
-  playerData.ySpeed = Math.cos(angle) * 10;
+  objects[socket.id].xSpeed = Math.sin(angle) * 10;
+  objects[socket.id].ySpeed = Math.cos(angle) * 10;
 }
 
-const updatePaddle = () => {
-  if (keyState[leftCode]) {
-    console.log(objects)
-    player.x -= 10;
-    socket.emit('entity update', player);
+const update = () => {
+  // if (keyState[leftCode]) {
+  //   console.log(objects)
+  //   player.x -= 10;
+  //   socket.emit('entity update', player);
+  // }
+  // if (keyState[rightCode]) {
+  //   player.x += 10;
+  //   socket.emit('entity update', player);
+  // }
+  // if (keyState[upCode]) {
+  //   player.y -= 10;
+  //   socket.emit('entity update', player);
+  // }
+  // if (keyState[downCode]) {
+  //   player.y += 10;
+  //   socket.emit('entity update', player);
+  // }
+
+  // Update all player locations
+  for (let i in objects) {
+    objects[i].x += objects[i].xSpeed;
+    objects[i].y += objects[i].ySpeed;
   }
-  if (keyState[rightCode]) {
-    player.x += 10;
-    socket.emit('entity update', player);
-  }
-  if (keyState[upCode]) {
-    player.y -= 10;
-    socket.emit('entity update', player);
-  }
-  if (keyState[downCode]) {
-    player.y += 10;
-    socket.emit('entity update', player);
+    
+  if (Math.abs(objects[socket.id].x - playerData.tX) < 20 && Math.abs(objects[socket.id].y - playerData.tY) < 20) {
+    objects[socket.id].xSpeed = 0;
+    objects[socket.id].ySpeed = 0;
+    socket.emit('entity update', objects[socket.id]);
   }
 
-  if (playerData.targeting) {
-
-
-    player.x += playerData.xSpeed;
-    player.y += playerData.ySpeed;
-
-    socket.emit('entity update', player);
-    if (Math.abs(player.x - playerData.tX) < 20 && Math.abs(player.y - playerData.tY) < 20) {
-      playerData.targeting = false
-    }
-  }
   
 };
 
@@ -105,11 +106,12 @@ document.addEventListener("keyup", function (e) {
 const draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawObjects();
-  updatePaddle();
+  update();
   requestAnimationFrame(draw);
+  
 };
 
-draw();
+
 
 
 // Sockets
@@ -120,7 +122,7 @@ var form = document.getElementById('form');
 var input = document.getElementById('input');
 
 
-socket.emit('entity create', player);
+
 
 // form.addEventListener('submit', function(e) {
 //   e.preventDefault();
@@ -148,3 +150,12 @@ socket.on('entity create', function(data) {
 socket.on('entity delete', function(id) {
   delete objects[id]
 });
+
+socket.on('connect', () => {
+  console.log(socket.id)
+  player.id = socket.id
+  objects[player.id] = player
+  socket.emit('entity create', player);
+  draw()
+});
+// draw();
