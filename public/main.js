@@ -49,8 +49,8 @@ function userClick(e) {
   let deltaY = playerData.tY - player.y
   let angle = Math.atan2(deltaX, deltaY)
 
-  playerData.xSpeed += Math.sin(angle) * 10;
-  playerData.ySpeed += Math.cos(angle) * 10;
+  playerData.xSpeed = Math.sin(angle) * 10;
+  playerData.ySpeed = Math.cos(angle) * 10;
 }
 
 const updatePaddle = () => {
@@ -73,6 +73,7 @@ const updatePaddle = () => {
   }
 
   if (playerData.targeting) {
+
 
     player.x += playerData.xSpeed;
     player.y += playerData.ySpeed;
