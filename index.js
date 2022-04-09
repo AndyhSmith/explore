@@ -54,6 +54,7 @@ io.on('connection', (socket) => {
     io.emit('entity delete', socket.id);
     console.log('user disconnected');
   });
+
 });
 
 server.listen(3001, () => {

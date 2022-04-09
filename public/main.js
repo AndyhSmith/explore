@@ -26,13 +26,16 @@ objects = {}
 
 const player = {
   id: 0,
-  x: 0,
-  y: 0,
+  name: "",
+  x: screenWidth / 2,
+  y: screenHeight / 2,
   xSpeed: 0,
   ySpeed: 0,
   tX: 0,
   tY: 0,
 };
+
+
 
 const localData = {
   playerID: 0,
@@ -56,6 +59,14 @@ function userClick(e) {
   objects[socket.id].ySpeed = Math.cos(angle) * 10;
   localData.targeting = true;
   socket.emit('entity update', objects[socket.id]);
+}
+
+function showToggle() {
+  document.getElementById("chat").style.display = "block"
+}
+
+function hideToggle() {
+  document.getElementById("chat").style.display = "none"
 }
 
 const update = () => {
@@ -94,6 +105,10 @@ const update = () => {
 
 const drawObjects = () => {
   for (let i in objects) {
+    ctx.font = '20px serif';
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText(objects[i].name, objects[i].x , objects[i].y - 50);
     if (objects[i].id == localData.id) {
       ctx.drawImage(auOrange, objects[i].x - 50, objects[i].y - 50, 100, 100);
     } else {
@@ -130,22 +145,39 @@ var messages = document.getElementById('messages');
 var form = document.getElementById('form');
 var input = document.getElementById('input');
 
+var nameForm = document.getElementById('name-form');
 
 
 
-// form.addEventListener('submit', function(e) {
-//   e.preventDefault();
-//   if (input.value) {
-//     socket.emit('chat message', input.value);
-//     input.value = '';
-//   }
-// });
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (input.value) {
+    socket.emit('chat message', objects[localData.id].name + ": " + input.value);
+    input.value = '';
+  }
+});
+
+nameForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (document.getElementById('name-input').value) {
+    document.getElementById("name-container").style.display = "none";
+    document.getElementById("chat-toggle").style.display = "block";
+    console.log(objects[localData.id])
+    objects[localData.id].name = document.getElementById('name-input').value
+    socket.emit('entity create', objects[localData.id]);
+  
+    
+    // socket.emit('entity update', objects[localData.id]);
+
+    draw()
+  }
+});
 
 socket.on('chat message', function(msg) {
   var item = document.createElement('li');
   item.textContent = msg;
   messages.appendChild(item);
-  window.scrollTo(0, document.body.scrollHeight);
+  document.getElementById('message-container').scrollTo(0, document.body.scrollHeight);
 });
 
 socket.on('entity update', function(data) {
@@ -166,7 +198,6 @@ socket.on('connect', () => {
   localData.id = socket.id
   player.id = localData.id
   objects[player.id] = player
-  socket.emit('entity create', player);
-  draw()
+  
 });
 // draw();

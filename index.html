@@ -6,30 +6,81 @@
     <style>
       body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
-      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+      #form { background: rgba(0, 0, 0, 0.15); padding: 5px; position: fixed; right: 0px; bottom: 0px; height: 30px; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; width: calc(100% - 100px);}
+      #name-input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; width: 100px; height: 30px; }
+
       #input:focus { outline: none; }
-      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+      #name-input:focus { outline: none; }
+      #form > button { background: #333; border: none; border-radius: 3px; outline: none; color: #fff; width: 50px;}
 
       #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages > li { padding: 0.5rem 1rem; }
-      #messages > li:nth-child(odd) { background: #efefef; }
+      #messages > li { padding: 0.5rem 1rem; color: white}
+      #messages > li:nth-child(odd) { background: rgba(50,50,50,.5); }
 
-      #source {	display:none;}
+      #au-red {	display:none;}
+      #au-orange {	display:none;}
+      #name-container {position: fixed; top: 50%; left: 50%;transform: translate(-50%,-50%);backdrop-filter: blur(10px);padding: 40px; border: 1px solid black}
+      #chat {position: fixed; bottom: 0px; right: 0px; width: 200px; height: 400px; backdrop-filter: blur(10px); display: none;}
+      #message-container {overflow:scroll; overflow-x:hidden; height: calc(100% - 30px);}
+      #chat-toggle {position: fixed; right: 0px; bottom: 0px; height: 30px; width: 200px; color: white; cursor: pointer;backdrop-filter: blur(10px); display:none;}
+      #chat-toggle2 {position: fixed; right: 0px; top: -30px; height: 30px; width: 200px; color: white; cursor: pointer;backdrop-filter: blur(10px);}
+
+
 
       html {margin: 0px;padding: 0px;}
 
       body {overflow: hidden;  background-image: url("https://live.staticflickr.com/5173/5436446554_9244788c36_b.jpg");  background-repeat: repeat;}
+
+      /* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
     </style>
   </head>
   <body>
     <canvas id="my-canvas" onclick="userClick(event)"></canvas>
     <img id="au-red" src="https://cdn.pixabay.com/photo/2021/02/12/13/43/among-us-6008615__480.png">
     <img id="au-orange" src="https://preview.redd.it/iio3xm4o1sn51.png?width=440&format=png&auto=webp&s=2b9fb1b29396502998feda5c6ed2ed75919c6ad8">
-    <!-- <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
-    </form> -->
+    
+    <div id="chat-toggle" onclick="showToggle()">
+      ▲ Chat
+    </div>
+
+    <div id="name-container">
+      <span style="color: white;">Enter Your Players Name:</span>
+      <form id="name-form" action="">
+        <input id="name-input" autocomplete="off" /><button>Enter</button>
+      </form>
+    </div>
+    
+    <div id="chat">
+      <div id="chat-toggle2" onclick="hideToggle()">
+        ▼ Chat
+      </div>
+      <div id="message-container">
+        <ul id="messages"></ul>
+      </div>
+      
+      <form id="form" action="">
+        <input id="input" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
 
 
     <!-- <script src="explore/socket.io/socket.io.js"></script>
