@@ -13,9 +13,10 @@ let objects = {}
 // const io = new Server(server);
 const io = require('socket.io')(server, {
   cors: {
+      rememberTransport: false,
       origin: "http://localhost:8100",
       methods: ["GET", "POST"],
-      transports: ['websocket', 'polling'],
+      transports: ['WebSocket', 'Flash Socket', 'AJAX long-polling'],
       credentials: true
   },
   allowEIO3: true
