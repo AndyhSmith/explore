@@ -63,11 +63,12 @@ function userClick(e) {
 
 function showToggle() {
   document.getElementById("chat").style.display = "block"
-  document.getElementById("chat-toggle").style.display = "none"
+
 }
 
 function hideToggle() {
   document.getElementById("chat").style.display = "none"
+  document.getElementById("chat-toggle").style.display = "none"
 }
 
 const update = () => {
