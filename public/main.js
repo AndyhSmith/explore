@@ -68,6 +68,7 @@ function showToggle() {
 
 function hideToggle() {
   document.getElementById("chat").style.display = "none"
+  document.getElementById("chat-toggle").style.display = "block"
 
 }
 
