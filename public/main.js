@@ -29,22 +29,21 @@ const player = {
   y: 0,
   xSpeed: 0,
   ySpeed: 0,
-};
-
-const playerData = {
   tX: 0,
   tY: 0,
-}
+};
+
+
 
 // objects[player.id] = player
 
 function userClick(e) {
   console.log("New Target")
-  playerData.tX = e.x;
-  playerData.tY = e.y;
+  objects[socket.id].tX = e.x;
+  objects[socket.id].tY = e.y;
 
-  let deltaX = playerData.tX - objects[socket.id].x
-  let deltaY = playerData.tY - objects[socket.id].y
+  let deltaX = objects[socket.id].tX - objects[socket.id].x
+  let deltaY = objects[socket.id].tY - objects[socket.id].y
   let angle = Math.atan2(deltaX, deltaY)
 
   objects[socket.id].xSpeed = Math.sin(angle) * 10;
@@ -75,13 +74,13 @@ const update = () => {
   for (let i in objects) {
     objects[i].x += objects[i].xSpeed;
     objects[i].y += objects[i].ySpeed;
+    if (Math.abs(objects[i].x - objects[i].tX) < 20 && Math.abs(objects[i].y - objects[i].tY) < 20) {
+      objects[i].xSpeed = 0;
+      objects[i].ySpeed = 0;
+    }
   }
     
-  if (Math.abs(objects[socket.id].x - playerData.tX) < 20 && Math.abs(objects[socket.id].y - playerData.tY) < 20) {
-    objects[socket.id].xSpeed = 0;
-    objects[socket.id].ySpeed = 0;
-    socket.emit('entity update', objects[socket.id]);
-  }
+  
 
   
 };
