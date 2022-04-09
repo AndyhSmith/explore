@@ -25,7 +25,7 @@ app.get('/explore', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/explore/main', (req, res) => {
+app.get('/explore/main.js', (req, res) => {
   res.sendFile(__dirname + '/public/main.js');
 });
 
