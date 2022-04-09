@@ -24,17 +24,18 @@ keyState[downCode] = false;
 objects = {}
 
 const player = {
-  id: Math.floor(Math.random() * 1000),
+  id: 0,
   x: 0,
   y: 0,
-  width: 100,
-  height: 20
 };
 
 const playerData = {
   targeting: false,
   tX: 0,
-  tY: 0
+  tY: 0,
+  xSpeed: 0,
+  ySpeed: 0,
+
 }
 
 // objects[player.id] = player
@@ -43,6 +44,13 @@ function userClick(e) {
   playerData.tX = e.x;
   playerData.tY = e.y;
   playerData.targeting = true;
+
+  let deltaX = playerData.tX - player.x
+  let deltaY = playerData.tY - player.y
+  let angle = Math.atan2(deltaX, deltaY)
+
+  playerData.xSpeed += Math.sin(angle) * 10;
+  playerData.ySpeed += Math.cos(angle) * 10;
 }
 
 const updatePaddle = () => {
@@ -69,8 +77,8 @@ const updatePaddle = () => {
     let deltaY = playerData.tY - player.y
     let angle = Math.atan2(deltaX, deltaY)
 
-    player.x += Math.sin(angle) * 10;
-    player.y += Math.cos(angle) * 10;
+    player.x += playerData.xSpeed;
+    player.y += playerData.ySpeed;
 
     socket.emit('entity update', player);
     if (Math.abs(player.x - playerData.tX) < 20 && Math.abs(player.y - playerData.tY) < 20) {

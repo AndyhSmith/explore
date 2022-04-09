@@ -42,7 +42,6 @@ io.on('connection', (socket) => {
 
   socket.on('entity update', (data) => {
     data.id = socket.id
-    console.log(data)
     objects[socket.id] = data
     io.emit('entity update', data)
   });
