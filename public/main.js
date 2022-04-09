@@ -73,9 +73,6 @@ const updatePaddle = () => {
   }
 
   if (playerData.targeting) {
-    let deltaX = playerData.tX - player.x
-    let deltaY = playerData.tY - player.y
-    let angle = Math.atan2(deltaX, deltaY)
 
     player.x += playerData.xSpeed;
     player.y += playerData.ySpeed;
