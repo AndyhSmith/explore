@@ -3,7 +3,16 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+// const io = new Server(server);
+const io = require('socket.io')(server, {
+  cors: {
+      origin: "http://localhost:8100",
+      methods: ["GET", "POST"],
+      transports: ['websocket', 'polling'],
+      credentials: true
+  },
+  allowEIO3: true
+});
 
 app.get('/explore', (req, res) => {
   res.sendFile(__dirname + '/index.html');
