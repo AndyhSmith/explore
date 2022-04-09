@@ -12,7 +12,8 @@ const ctx = canvas.getContext("2d");
 canvas.height = screenHeight;
 canvas.width = screenWidth;
 
-const image = document.getElementById('source');
+const auRed = document.getElementById('au-red');
+const auOrange = document.getElementById('au-orange');
 
 const keyState = {};
 keyState[leftCode] = false;
@@ -33,6 +34,11 @@ const player = {
   tY: 0,
 };
 
+const localData = {
+  playerID: 0,
+  targeting: false,
+}
+
 
 
 // objects[player.id] = player
@@ -48,6 +54,7 @@ function userClick(e) {
 
   objects[socket.id].xSpeed = Math.sin(angle) * 10;
   objects[socket.id].ySpeed = Math.cos(angle) * 10;
+  localData.targeting = true;
   socket.emit('entity update', objects[socket.id]);
 }
 
@@ -70,24 +77,28 @@ const update = () => {
   //   socket.emit('entity update', player);
   // }
 
-  // Update all player locations
-  for (let i in objects) {
-    objects[i].x += objects[i].xSpeed;
-    objects[i].y += objects[i].ySpeed;
-    if (Math.abs(objects[i].x - objects[i].tX) < 20 && Math.abs(objects[i].y - objects[i].tY) < 20) {
-      objects[i].xSpeed = 0;
-      objects[i].ySpeed = 0;
-    }
+  if (localData.targeting) {
+    objects[localData.id].x += objects[localData.id].xSpeed;
+    objects[localData.id].y += objects[localData.id].ySpeed;
+    socket.emit('entity update', objects[localData.id]);
   }
     
-  
+    
+  if (Math.abs(objects[localData.id].x - objects[localData.id].tX) < 5 && Math.abs(objects[localData.id].y - objects[localData.id].tY) < 5) {
+    objects[localData.id].xSpeed = 0;
+    objects[localData.id].ySpeed = 0;
+  }
 
   
 };
 
 const drawObjects = () => {
   for (let i in objects) {
-    ctx.drawImage(image, objects[i].x, objects[i].y, 100, 100);
+    if (objects[i].id == localData.id) {
+      ctx.drawImage(auOrange, objects[i].x - 50, objects[i].y - 50, 100, 100);
+    } else {
+      ctx.drawImage(auRed, objects[i].x - 50, objects[i].y - 50, 100, 100);
+    }
   }
   
   // ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
@@ -138,8 +149,7 @@ socket.on('chat message', function(msg) {
 });
 
 socket.on('entity update', function(data) {
-  if (data.id != socket.id) {
-    console.log("Not happending")
+  if (data.id != localData.id) {
     objects[data.id] = data
   }
 });
@@ -153,8 +163,8 @@ socket.on('entity delete', function(id) {
 });
 
 socket.on('connect', () => {
-  console.log(socket.id)
-  player.id = socket.id
+  localData.id = socket.id
+  player.id = localData.id
   objects[player.id] = player
   socket.emit('entity create', player);
   draw()

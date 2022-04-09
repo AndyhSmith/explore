@@ -31,13 +31,11 @@ app.get('/explore/main.js', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
-  // socket.broadcast.emit('hi');
+  console.log('User has connected:', socket.id);
 
   socket.on('entity create', (data) => {
     data.id = socket.id
     objects[socket.id] = data
-    console.log(data)
     io.emit('entity create', data)
   });
 
