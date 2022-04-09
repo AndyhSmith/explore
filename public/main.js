@@ -32,7 +32,6 @@ const player = {
 };
 
 const playerData = {
-  targeting: false,
   tX: 0,
   tY: 0,
 }
@@ -43,7 +42,6 @@ function userClick(e) {
   console.log("New Target")
   playerData.tX = e.x;
   playerData.tY = e.y;
-  playerData.targeting = true;
 
   let deltaX = playerData.tX - objects[socket.id].x
   let deltaY = playerData.tY - objects[socket.id].y
