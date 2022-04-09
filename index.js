@@ -22,8 +22,11 @@ const io = require('socket.io')(server, {
 });
 
 app.get('/explore', (req, res) => {
-  
   res.sendFile(__dirname + '/index.html');
+});
+
+app.get('/explore/main', (req, res) => {
+  res.sendFile(__dirname + '/public/main.js');
 });
 
 io.on('connection', (socket) => {
