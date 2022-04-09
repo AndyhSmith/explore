@@ -139,7 +139,9 @@ socket.on('chat message', function(msg) {
 });
 
 socket.on('entity update', function(data) {
-  objects[data.id] = data
+  if (data.id != socket.id) {
+    objects[data.id] = data
+  }
 });
 
 socket.on('entity create', function(data) {
