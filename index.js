@@ -5,7 +5,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-app.get('/explore', (req, res) => {
+app.get('/sockets.io', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
