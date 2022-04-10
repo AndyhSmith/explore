@@ -9,6 +9,7 @@ const downCode = 40;
 
 const canvas = document.getElementById("my-canvas");
 const ctx = canvas.getContext("2d");
+
 canvas.height = screenHeight;
 canvas.width = screenWidth;
 
@@ -44,6 +45,8 @@ let camera = {
 const localData = {
   playerID: 0,
   targeting: false,
+  RADAR_ACTIVATION_DISTANCE: 200,
+  RADAR_DISTANCE: 100,
 }
 
 
@@ -116,13 +119,38 @@ const update = () => {
 
 const drawObjects = () => {
 
- // Radar
- for (let i in objects) {
+  // Radar
+  // for (let i in objects) {
+  //   if (objects[i].id != localData.id) {
+  //     ctx.beginPath();
+  //     ctx.moveTo(objects[localData.id].x + camera.x, objects[localData.id].y + camera.y);
+  //     ctx.lineTo(objects[i].x + camera.x, objects[i].y + camera.y);
+  //     ctx.stroke();
+  //   }
+  // }
+  for (let i in objects) {
     if (objects[i].id != localData.id) {
-      ctx.beginPath();
-      ctx.moveTo(objects[localData.id].x + camera.x, objects[localData.id].y + camera.y);
-      ctx.lineTo(objects[i].x + camera.x, objects[i].y + camera.y);
-      ctx.stroke();
+      if (Math.abs(objects[i].x - objects[localData.id].x) > localData.RADAR_ACTIVATION_DISTANCE || 
+            Math.abs(objects[i].y - objects[localData.id].y) > localData.RADAR_ACTIVATION_DISTANCE) {
+        let deltaX = objects[i].x - objects[localData.id].x 
+        let deltaY = objects[i].y - objects[localData.id].y 
+        let angle = Math.atan2(deltaX, deltaY)
+
+
+        let d = 100
+        let pX = Math.sin(angle) * localData.RADAR_DISTANCE
+        let pY = Math.cos(angle) * localData.RADAR_DISTANCE
+
+        let pX2 = Math.sin(angle) * (localData.RADAR_DISTANCE + 20)
+        let pY2= Math.cos(angle) * (localData.RADAR_DISTANCE + 20)
+
+
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(pX + objects[localData.id].x + camera.x, pY + objects[localData.id].y + camera.y);
+        ctx.lineTo(pX2 + objects[localData.id].x + camera.x, pY2 + objects[localData.id].y + camera.y);
+        ctx.stroke();
+      }
     }
   }
 
