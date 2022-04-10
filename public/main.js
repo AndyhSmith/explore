@@ -35,6 +35,10 @@ const player = {
   tY: 0,
 };
 
+let camera = {
+  x: 0,
+  y: 0,
+}
 
 
 const localData = {
@@ -48,11 +52,11 @@ const localData = {
 
 function userClick(e) {
   console.log("New Target")
-  objects[socket.id].tX = e.x;
-  objects[socket.id].tY = e.y;
+  objects[socket.id].tX = e.x - camera.x;
+  objects[socket.id].tY = e.y - camera.y;
 
-  let deltaX = objects[socket.id].tX - objects[socket.id].x
-  let deltaY = objects[socket.id].tY - objects[socket.id].y
+  let deltaX = (objects[socket.id].tX) - (objects[socket.id].x)
+  let deltaY = (objects[socket.id].tY) - (objects[socket.id].y)
   let angle = Math.atan2(deltaX, deltaY)
 
   objects[socket.id].xSpeed = Math.sin(angle) * 10;
@@ -91,31 +95,49 @@ const update = () => {
   //   socket.emit('entity update', player);
   // }
 
+ 
+
+
   if (localData.targeting) {
     objects[localData.id].x += objects[localData.id].xSpeed;
     objects[localData.id].y += objects[localData.id].ySpeed;
     socket.emit('entity update', objects[localData.id]);
   }
     
-    
-  if (Math.abs(objects[localData.id].x - objects[localData.id].tX) < 5 && Math.abs(objects[localData.id].y - objects[localData.id].tY) < 5) {
+  if (Math.abs(objects[localData.id].x- objects[localData.id].tX) < 5 && Math.abs(objects[localData.id].y - objects[localData.id].tY) < 5) {
     objects[localData.id].xSpeed = 0;
     objects[localData.id].ySpeed = 0;
   }
 
+  camera.x = (window.innerWidth / 2) - objects[localData.id].x
+  camera.y = (window.innerHeight / 2) - objects[localData.id].y
   
 };
 
 const drawObjects = () => {
+
+ // Radar
+ for (let i in objects) {
+    if (objects[i].id != localData.id) {
+      ctx.beginPath();
+      ctx.moveTo(objects[localData.id].x + camera.x, objects[localData.id].y + camera.y);
+      ctx.lineTo(objects[i].x + camera.x, objects[i].y + camera.y);
+      ctx.stroke();
+    }
+  }
+
   for (let i in objects) {
+    // Draw Name
     ctx.font = '20px serif';
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
-    ctx.fillText(objects[i].name, objects[i].x , objects[i].y - 50);
+    ctx.fillText(objects[i].name, objects[i].x + camera.x, objects[i].y - 50 + camera.y);
+
+    // Draw
     if (objects[i].id == localData.id) {
-      ctx.drawImage(auOrange, objects[i].x - 50, objects[i].y - 50, 100, 100);
+      ctx.drawImage(auOrange, objects[i].x - 50 + camera.x, objects[i].y + camera.y - 50, 100, 100);
     } else {
-      ctx.drawImage(auRed, objects[i].x - 50, objects[i].y - 50, 100, 100);
+      ctx.drawImage(auRed, objects[i].x - 50 + camera.x, objects[i].y - 50 + camera.y, 100, 100);
     }
   }
   
