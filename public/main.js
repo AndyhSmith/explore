@@ -249,6 +249,7 @@ const drawObjects = () => {
   }
 
   // Radar
+  
   for (let i in objects) {
     if (objects[i].id != localData.id) {
       if (Math.abs(objects[i].x - objects[localData.id].x) > localData.RADAR_ACTIVATION_DISTANCE || 
@@ -266,7 +267,15 @@ const drawObjects = () => {
         let pY2= Math.cos(angle) * (localData.RADAR_DISTANCE + 20)
 
 
-        ctx.lineWidth = 3;
+        // ctx.lineWidth = 6;
+        // ctx.strokeStyle = '#FFFFFF';
+        // ctx.beginPath();
+        // ctx.moveTo(pX + objects[localData.id].x + camera.x, pY + objects[localData.id].y + camera.y);
+        // ctx.lineTo(pX2 + objects[localData.id].x + camera.x, pY2 + objects[localData.id].y + camera.y);
+        // ctx.stroke();
+
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#" + colors[objects[i].img];
         ctx.beginPath();
         ctx.moveTo(pX + objects[localData.id].x + camera.x, pY + objects[localData.id].y + camera.y);
         ctx.lineTo(pX2 + objects[localData.id].x + camera.x, pY2 + objects[localData.id].y + camera.y);
