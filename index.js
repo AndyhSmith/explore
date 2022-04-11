@@ -30,13 +30,15 @@ app.get('/explore/main.js', (req, res) => {
   res.sendFile(__dirname + '/public/main.js');
 });
 
+
 io.on('connection', (socket) => {
   console.log('User has connected:', socket.id);
+
 
   socket.on('entity create', (data) => {
     data.id = socket.id
     objects[socket.id] = data
-    io.emit('entity create', data)
+    io.emit('entity create', objects)
   });
 
   socket.on('entity update', (data) => {

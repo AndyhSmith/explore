@@ -1,93 +1,129 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <style>
       body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
-      #form { background: rgba(0, 0, 0, 0.15); padding: 5px; position: fixed; right: 0px; bottom: 0px; height: 30px; box-sizing: border-box; backdrop-filter: blur(10px); }
-      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; width: calc(100% - 100px);}
+      
       #name-input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; width: 100px; height: 30px; }
 
       #input:focus { outline: none; }
       #name-input:focus { outline: none; }
-      #form > button { background: #333; border: none; border-radius: 3px; outline: none; color: #fff; width: 50px;}
+      
 
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages > li { padding: 0.5rem 1rem; color: white}
       #messages > li:nth-child(odd) { background: rgba(50,50,50,.5); }
 
-      #au-red {	display:none;}
-      #au-orange {	display:none;}
+      .au {display: none;}
       #name-container {position: fixed; top: 50%; left: 50%;transform: translate(-50%,-50%);backdrop-filter: blur(10px);padding: 40px; border: 1px solid black}
-      #chat {position: fixed; bottom: 0px; right: 0px; width: 200px; height: 400px; backdrop-filter: blur(10px); display: none;}
-      #message-container {overflow:scroll; overflow-x:hidden; height: calc(100% - 30px);}
-      #chat-toggle {position: fixed; right: 0px; bottom: 0px; height: 30px; width: 200px; color: white; cursor: pointer;backdrop-filter: blur(10px); display:none;}
-      #chat-toggle2 {height: 30px; width: 200px; color: white; cursor: pointer;backdrop-filter: blur(10px);}
-
+     
+      #form { background: rgba(0, 0, 0, 0.15); padding: 5px; position: fixed; right: 0px; bottom: 0px; box-sizing: border-box; backdrop-filter: blur(10px); width: 300px;height: 40px;}
+      #form > button { background: #333; border: none; border-radius: 3px; outline: none; color: #fff; width: 50px;}
+      #input { border: none; border-radius: 10px; margin: 5px; width: 200px;padding:3px;padding-left: 10px;}
+      #chat {position: fixed; bottom: 0px; right: 0px; width: 300px; height: 400px; backdrop-filter: blur(10px); display: none;}
+      #message-container {overflow:scroll; overflow-x:hidden; height: calc(100% - 80px);}
+      #chat-toggle {position: fixed; right: 0px; bottom: 0px; width: 300px; color: white; cursor: pointer;backdrop-filter: blur(10px); display:none; padding: 10px;height: 20px;}
+      #chat-toggle2 {height: 30px; width: 300px; color: white; cursor: pointer;backdrop-filter: blur(10px); padding: 10px;height: 20px;}
+      
+      #color-container {position: fixed; top: 60px; left: 20px; display: none;}
+      #color-selected-container {position: fixed; top: 20px; left: 20px; display: none;}
+      .au-color {width: 30px; height: 30px; border-radius: 5px; border: 2px solid black; background-color: white; cursor: pointer; display: inline-block; margin: 3px;}
+      .au-color:hover {opacity: .6;}
 
 
       html {margin: 0px;padding: 0px;}
 
       body {overflow: hidden; background-color:#888}  /*background-image: url("https://live.staticflickr.com/5173/5436446554_9244788c36_b.jpg");  background-repeat: repeat;}*/
 
-      /* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1; 
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888; 
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555; 
-}
+      ::-webkit-scrollbar { width: 5px;}
+      ::-webkit-scrollbar-track {  background: #f1f1f1; }
+      ::-webkit-scrollbar-thumb {  background: #888; }
+      ::-webkit-scrollbar-thumb:hover {  background: #555; }
     </style>
   </head>
   <body>
     <canvas id="my-canvas" onclick="userClick(event)"></canvas>
-    <img id="au-red" src="https://cdn.pixabay.com/photo/2021/02/12/13/43/among-us-6008615__480.png">
-    <img id="au-orange" src="https://preview.redd.it/iio3xm4o1sn51.png?width=440&format=png&auto=webp&s=2b9fb1b29396502998feda5c6ed2ed75919c6ad8">
+    <img class="au" id="au-blue" src="https://andyhsmith.com/images/au/au_blue.png">
+    <img class="au" id="au-blue-l" src="https://andyhsmith.com/images/au/au_blue_l.png">
+
+    <img class="au" id="au-brown" src="https://andyhsmith.com/images/au/au_brown.png">
+    <img class="au" id="au-brown-l" src="https://andyhsmith.com/images/au/au_brown_l.png">
+
+    <img class="au" id="au-clay" src="https://andyhsmith.com/images/au/au_clay.png">
+    <img class="au" id="au-clay-l" src="https://andyhsmith.com/images/au/au_clay_l.png">
+
+    <img class="au" id="au-dark" src="https://andyhsmith.com/images/au/au_dark.png">
+    <img class="au" id="au-dark-l" src="https://andyhsmith.com/images/au/au_dark_l.png">
+
+    <img class="au" id="au-discord" src="https://andyhsmith.com/images/au/au_discord.png">
+    <img class="au" id="au-discord-l" src="https://andyhsmith.com/images/au/au_discord_l.png">
+
+    <img class="au" id="au-green" src="https://andyhsmith.com/images/au/au_green.png">
+    <img class="au" id="au-green-l" src="https://andyhsmith.com/images/au/au_green_l.png">
+
+    <img class="au" id="au-lime" src="https://andyhsmith.com/images/au/au_lime.png">
+    <img class="au" id="au-lime-l" src="https://andyhsmith.com/images/au/au_lime_l.png">
+
+    <img class="au" id="au-orange" src="https://andyhsmith.com/images/au/au_orange.png">
+    <img class="au" id="au-orange-l" src="https://andyhsmith.com/images/au/au_orange_l.png">
+
+    <img class="au" id="au-peach" src="https://andyhsmith.com/images/au/au_peach.png">
+    <img class="au" id="au-peach-l" src="https://andyhsmith.com/images/au/au_peach_l.png">
+
+    <img class="au" id="au-pink" src="https://andyhsmith.com/images/au/au_pink.png">
+    <img class="au" id="au-pink-l" src="https://andyhsmith.com/images/au/au_pink_l.png">
+
+    <img class="au" id="au-red" src="https://andyhsmith.com/images/au/au_red.png">
+    <img class="au" id="au-red-l" src="https://andyhsmith.com/images/au/au_red_l.png">
+
+    <img class="au" id="au-sky" src="https://andyhsmith.com/images/au/au_sky.png">
+    <img class="au" id="au-sky-l" src="https://andyhsmith.com/images/au/au_sky_l.png">
+
+    <img class="au" id="au-tan" src="https://andyhsmith.com/images/au/au_tan.png">
+    <img class="au" id="au-tan-l" src="https://andyhsmith.com/images/au/au_tan_l.png">
+
+    <img class="au" id="au-white" src="https://andyhsmith.com/images/au/au_white.png">
+    <img class="au" id="au-white-l" src="https://andyhsmith.com/images/au/au_white_l.png">
+
+    <img class="au" id="au-yellow" src="https://andyhsmith.com/images/au/au_yellow.png">
+    <img class="au" id="au-yellow-l" src="https://andyhsmith.com/images/au/au_yellow_l.png">
+
+
+    <img class="au" id="background" src="https://i.pinimg.com/originals/da/04/af/da04af814cd09becef58c9084a2d8754.png">
+    <!-- https://i.pinimg.com/originals/da/f1/8e/daf18e7abe71f504d812ce5c270fd9aa.png -->
+    <!-- https://i.pinimg.com/originals/da/04/af/da04af814cd09becef58c9084a2d8754.png -->
+    <!-- https://i.pinimg.com/originals/5a/df/3a/5adf3a732deacada75191e32515ff569.png -->
+    <!-- https://live.staticflickr.com/5173/5436446554_9244788c36_b.jpg -->
+
     
-    <div id="chat-toggle" onclick="showToggle()">
-      ▲ Chat
+
+    <div id="color-selected-container" onclick="toggleColors()">
+      <div class="au-color" id="change-color"></div>
     </div>
+    
+    <div id="color-container">
+      <div class="au-color"></div>
+    </div>
+    
+    <div id="chat-toggle" onclick="showToggle()"> ▲ Chat </div>
 
     <div id="name-container">
       <span style="color: white;">Enter Your Players Name:</span>
-      <form id="name-form" action="">
-        <input id="name-input" autocomplete="off" /><button>Enter</button>
-      </form>
+      <form id="name-form" action=""><input id="name-input" autocomplete="off" /><button>Enter</button></form>
       <span style="color: white;">Connect multiple devices to this site.</span>
     </div>
     
     <div id="chat">
-      <div id="chat-toggle2" onclick="hideToggle()">
-        ▼ Chat
-      </div>
-      <div id="message-container">
-        <ul id="messages"></ul>
-      </div>
-      
-      <form id="form" action="">
-        <input id="input" autocomplete="off" /><button>Send</button>
-      </form>
+      <div id="chat-toggle2" onclick="hideToggle()">▼ Chat</div>
+      <div id="message-container"><ul id="messages"></ul></div>
+      <form id="form" action=""><input id="input" autocomplete="off" /><button>Send</button></form>
     </div>
 
-
-    <!-- <script src="explore/socket.io/socket.io.js"></script>
-    <script src="http://localhost:3001/explore/socket.io/socket.io.js"></script> -->
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-
 
     <script src="main.js" ></script>
     <script src="https://andyhsmith.com/explore/main.js" type="text/javascript"></script>
