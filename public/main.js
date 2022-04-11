@@ -20,7 +20,7 @@ const downCode = 40;
 const canvas = document.getElementById("my-canvas");
 const ctx = canvas.getContext("2d");
 
-canvas.height = screenHeight;
+canvas.height = document.documentElement.clientHeight;
 canvas.width = screenWidth;
 
 const auRed = document.getElementById('au-red');
