@@ -119,6 +119,7 @@ const localData = {
   tilesX: Math.floor(window.innerWidth / 300) + 2,
   tilesY: Math.floor(window.innerHeight / 300) + 2,
   gap: 512,
+  gapy: 445,
 }
 
 
@@ -241,7 +242,7 @@ const drawObjects = () => {
   ctx.fillStyle = "black"
   for (let i = -1; i < localData.tilesX; i++) {
     for (let j = -1; j < localData.tilesY; j++ ) {
-      ctx.drawImage(IMG_BACKGROUND, i * localData.gap + (camera.x % localData.gap), j * localData.gap + (camera.y % localData.gap), localData.gap, localData.gap);
+      ctx.drawImage(IMG_BACKGROUND, i * localData.gap + (camera.x % localData.gap), j * localData.gapy + (camera.y % localData.gapy), localData.gap, localData.gapy);
       ctx.fillRect(i * localData.gap + (camera.x % localData.gap) , j * localData.gap + (camera.y % localData.gap), 5, 5);
       
     }
