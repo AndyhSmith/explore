@@ -9,6 +9,21 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 
 let objects = {}
+let scoreboard = {}
+let players = 0
+let currentGame = -1
+
+let votes = {
+  0: [], // TargetChaser
+  1: [], // Zombies
+}
+
+let target = {
+  x: 0,
+  y: 0,
+  width: 200,
+  height: 200,
+}
 
 // const io = new Server(server);
 const io = require('socket.io')(server, {
@@ -31,20 +46,144 @@ app.get('/explore/main.js', (req, res) => {
 });
 
 
+function removeVote(id) {
+  // Remove previous vote
+  for (let property in votes) {
+    let index = votes[property].indexOf(id);
+    if (index > -1) {
+      votes[property].splice(index, 1);
+    }
+  }
+}
+
+function placeTarget() {
+  console.log("Setting Target Position")
+  target.x = Math.random() * 4000 - 2000
+  target.y = Math.random() * 4000 - 2000
+  io.emit('set target', target)
+}
+
+function pickRandomProperty(obj) {
+  var result;
+  var count = 0;
+  for (var prop in obj)
+      if (Math.random() < 1/++count)
+         result = prop;
+  return result;
+}
+
+function startGame(gameID) {
+  // Move Players to Start
+  currentGame = gameID
+  for (let property in objects) {
+    objects[property].x = 0
+    objects[property].y = 0
+    objects[property].tag = 0
+    if (gameID == 1) { // Zombie Chase
+      objects[property].tag = "Alive"
+      objects[property].img = 7
+    }
+  }
+
+  if (gameID == 1) {
+    let randomObject = Object.keys(objects)[Math.floor(Math.random() * Object.keys(objects).length)]
+    objects[randomObject].tag = "Zombie"
+    objects[randomObject].img = 11
+  }
+  
+
+  io.emit('entity create', objects)
+  if (gameID == 0) { // Target Chaser
+    placeTarget()
+  }
+ 
+  io.emit('start game', gameID)
+}
+
 io.on('connection', (socket) => {
+  players += 1;
   console.log('User has connected:', socket.id);
+  console.log("Total Players: " + players);
 
 
   socket.on('entity create', (data) => {
     data.id = socket.id
     objects[socket.id] = data
     io.emit('entity create', objects)
+    socket.emit('update vote', votes)
+  });
+
+  socket.on('vote', (voteValue) => {
+    removeVote(socket.id)
+    votes[voteValue].push(socket.id)
+    io.emit('update vote', votes)
+    // Check if start game
+    let numberOfVotes = votes[0].length + votes[1].length
+    let minNumberOfVotes = Math.ceil(players / 2)
+    if (minNumberOfVotes < 2) {
+      minNumberOfVotes = 2
+    }
+    if (numberOfVotes >= minNumberOfVotes) {
+      // Check which Game to Start
+      let mostVotedGameID = 0
+      let mostVotedGame = 0
+      for (let property in votes) {
+        if (votes[property].length > mostVotedGame) {
+          mostVotedGame = votes[property].length
+          mostVotedGameID = property
+        }
+      }
+      votes = {
+        0: [], // TargetChaser
+        1: [], // Zombies
+      }
+      io.emit('update vote', votes)
+
+      // Start Game on CLient
+      console.log("Starting Game", mostVotedGameID)
+      startGame(mostVotedGameID)
+    }
   });
 
   socket.on('entity update', (data) => {
-    data.id = socket.id
-    objects[socket.id] = data
+    // data.id = socket.id
+    objects[data.id] = data
     io.emit('entity update', data)
+  });
+
+  socket.on('get game state', () => {
+    console.log("Current Game", currentGame)
+    if (currentGame != -1) {
+      socket.emit('update game state', currentGame)
+      socket.emit('start game', currentGame)
+    }
+  });
+
+  socket.on('collect target', (data) => {
+    objects[socket.id] = data
+    // Check if game over
+    if (objects[socket.id].tag >= 5) {
+      io.emit('game over', data)
+      currentGame = -1
+    } else {
+      io.emit('entity update', data)
+      placeTarget()
+    }
+  });
+
+  socket.on('check game over', (data) => {
+    let gameOver = true;
+    io.emit('entity create', objects)
+    for (let property in objects) {
+      if (objects[property].img != 11) {
+        gameOver = false;
+        break;
+      }
+    }
+    if (gameOver) {
+      io.emit('game over', objects[data])
+      currentGame = -1
+    } 
   });
 
   socket.on('chat message', (msg) => {
@@ -53,6 +192,8 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     delete objects[socket.id];
+    removeVote(socket.id)
+    players -= 1;
     io.emit('entity delete', socket.id);
     console.log('user disconnected');
   });

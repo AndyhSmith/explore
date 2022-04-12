@@ -18,10 +18,10 @@
       #messages > li:nth-child(odd) { background: rgba(50,50,50,.5); }
 
       .au {display: none;}
-      #name-container {position: fixed; top: 50%; left: 50%;transform: translate(-50%,-50%);backdrop-filter: blur(10px);-webkit-backdrop-filter: blur(10px);padding: 40px; border: 1px solid black}
+      #name-container {text-align: center; position: fixed; top: 50%; left: 50%;transform: translate(-50%,-50%);backdrop-filter: blur(10px);-webkit-backdrop-filter: blur(10px);padding: 40px; border: 1px solid black}
      
       #form { background: rgba(0, 0, 0, 0.15); padding: 5px; position: fixed; right: 0px; bottom: 0px; box-sizing: border-box; backdrop-filter: blur(10px); width: 300px;height: 40px;}
-      #form > button { background: #333; border: none; border-radius: 3px; outline: none; color: #fff; width: 50px;}
+      #form > button {cursor: pointer; background: #333; border: none; border-radius: 3px; outline: none; color: #fff; width: 50px;}
       #input { border: none; border-radius: 10px; margin: 5px; width: 200px;padding:3px;padding-left: 10px;font-size: 16px;}
       #chat {position: fixed; bottom: 0px; right: 0px; width: 300px; height: 400px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);display: none;}
       #message-container {overflow:scroll; overflow-x:hidden; height: calc(100% - 80px);}
@@ -34,15 +34,38 @@
       .au-color:hover {opacity: .6;}
 
 
+      #game-selector {position: fixed; top: 20px; left: 70px; display:none;}
+      .play-button {font-size: 18px; padding: 5px; font-weight: bold; text-align: center; width: 60px; height: 20px; border-radius: 5px; border: 2px solid black; background-color: #555; cursor: pointer; display: inline-block; margin: 3px;color: white;}
+      .play-button:hover {opacity: .6;}
+
+      #game-options {display:none; width: 80%; max-width: 400px; height:300px; position: fixed; top: 50%; left: 50%;transform: translate(-50%,-50%); border: 2px solid white;color: white; text-align:center; padding: 10px;}
+      .game {cursor: pointer; width: 70%; border: 1px solid white; background-color: #333; margin: 5px; padding: 5px; margin-left: auto; margin-right: auto;}
+      .game:hover {opacity: .6;}
+      #game-message {position: fixed; width: 100%; height: 100%; left: 0px; top: 0px; text-align:center;display:none;z-index: 3;}
+      #game-message-title {color: red; font-size: 100px;font-weight:bold;}
+      #game-message-info {color: red; font-size: 40px;}
+      #scoreboard {position: fixed; top: 20px; left: 20px; border: 2px solid white; width: 120px; max-height: 200px; border-radius: 5px; color:white; text-align:center; padding: 5px;display:none;}
+      #scoreboard-contents {text-align: left; width: 100%; padding-left: 5px;}
+
       html {margin: 0px;padding: 0px;}
 
-      body {overflow: hidden; background-color:black}  /*background-image: url("https://live.staticflickr.com/5173/5436446554_9244788c36_b.jpg");  background-repeat: repeat;}*/
+      body {overflow: hidden; background-color:black; background-image: url("https://andyhsmith.com/images/hex.png");  background-repeat: repeat;}
 
+      .blur {backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px)}
 
       ::-webkit-scrollbar { width: 5px;}
       ::-webkit-scrollbar-track {  background: #f1f1f1; }
       ::-webkit-scrollbar-thumb {  background: #888; }
       ::-webkit-scrollbar-thumb:hover {  background: #555; }
+
+      .unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
     </style>
   </head>
   <body>
@@ -99,21 +122,45 @@
     <!-- https://i.pinimg.com/originals/5a/df/3a/5adf3a732deacada75191e32515ff569.png -->
     <!-- https://live.staticflickr.com/5173/5436446554_9244788c36_b.jpg -->
 
-    
+    <div class="unselectable blur" id="scoreboard">
+      <span>Scoreboard</span>
+      <hr>
+      <div id="scoreboard-contents"></div>
+    </div>
 
-    <div id="color-selected-container" onclick="toggleColors()">
+    <div class="unselectable" id="game-message">
+      <div style="position:fixed;top:50%;left:50%;transform: translate(-50%,-50%); width:100%;">
+        <span id="game-message-title">Sample Title</span><br>
+        <span id="game-message-info">This is a long sample text to see how spacing works.</span>
+      </div>
+    </div>
+
+    <div class="unselectable" id="color-selected-container" onclick="toggleColors()">
       <div class="au-color" id="change-color"></div>
     </div>
-    
-    <div id="color-container">
-      <div class="au-color"></div>
+
+    <div class="unselectable" id="game-selector" onclick="toggleGameMenu()">
+      <div class="play-button">PLAY</div>
     </div>
     
-    <div id="chat-toggle" onclick="showToggle()"> ▲ Chat </div>
+    <div class="unselectable" id="color-container">
+      <div class="au-color"></div>
+    </div>
+
+    <div class="unselectable blur" id="game-options">
+      <span style="font-weight: bold; font-size: 24px;">- Games -</span><br>
+      <span>Players Online: </span><span id="players-online"></span><br>
+      <span>Votes Needed to Start a Game: </span><span id="votes"></span><br>
+      <div class="game" onclick="placeVote(0)">Target Chaser <span id="target-chaser-votes"></span></div>
+      <div class="game" onclick="placeVote(1)">Zombies <span id="zombies-votes"></span></div>
+      <div class="game" onclick="toggleGameMenu()">Close</div>
+    </div>
+    
+    <div id="chat-toggle" onclick="showToggle()">▲ Chat</div>
 
     <div id="name-container">
-      <span style="color: white;">Enter Your Players Name:</span>
-      <form id="name-form" action=""><input id="name-input" autocomplete="off" /><button>Enter</button></form>
+      <span style="color: white;"></span>
+      <form id="name-form" action=""><input id="name-input" placeholder="Nickname" autocomplete="off" /><button>Enter</button></form>
       <span style="color: white;">Connect multiple devices to this site.</span>
     </div>
     
