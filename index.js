@@ -175,7 +175,7 @@ io.on('connection', (socket) => {
       io.emit('game over', data)
       currentGame = -1
     } else {
-      io.emit('entity update', data)
+      io.emit('tag update', data)
       placeTarget()
     }
     
