@@ -560,8 +560,6 @@ socket.on('entity update', function(data) {
     // check if game over
     socket.emit('check game over', localData.id);
   } 
-  
-
 });
 
 function updateEntityCount() {

@@ -182,7 +182,7 @@ io.on('connection', (socket) => {
 
   socket.on('check game over', (data) => {
     let gameOver = true;
-    io.emit('entity create', objects)
+    // io.emit('tag update', objects)
     for (let property in objects) {
       if (objects[property].img != 11) {
         gameOver = false;
