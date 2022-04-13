@@ -153,18 +153,21 @@ io.on('connection', (socket) => {
     objects[data.id].tag = data.tag
 
     io.emit('tag update', objects[data.id])
-
+    
     if (currentGame == 1) {
+      console.log("tag update")
       let gameOver = true;
       // io.emit('tag update', objects)
       for (let property in objects) {
+        console.log(objects[property].img)
         if (objects[property].img != 11) {
           gameOver = false;
           break;
         }
       }
+      console.log(gameOver)
       if (gameOver) {
-        io.emit('game over', objects[data])
+        io.emit('game over', objects[data.id])
         currentGame = -1
       } 
     }

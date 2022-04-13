@@ -625,6 +625,7 @@ socket.on('start game', function(gameID) {
 });
 
 socket.on('game over', function(winner) {
+  console.log(winner)
   // Show Message
   document.getElementById("game-message-title").innerHTML = winner.name
   document.getElementById("game-message-info").innerHTML = "Has won the game!"
