@@ -531,7 +531,6 @@ socket.on('chat message', function(msg) {
 });
 
 socket.on('entity update', function(data) {
-  objects[data.id].tag = data.tag
 
   if (data.id != localData.id) {
     objects[data.id] = data
