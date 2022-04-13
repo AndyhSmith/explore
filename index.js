@@ -25,6 +25,8 @@ let target = {
   height: 146,
 }
 
+let exitVotes = {}
+
 // const io = new Server(server);
 const io = require('socket.io')(server, {
   cors: {
@@ -74,6 +76,7 @@ function pickRandomProperty(obj) {
 
 function startGame(gameID) {
   // Move Players to Start
+  exitVotes = {}
   currentGame = gameID
   for (let property in objects) {
     objects[property].x = 0
@@ -148,7 +151,7 @@ io.on('connection', (socket) => {
   socket.on('tag update', (data) => {
     // data.id = socket.id
     objects[data.id].tag = data.tag
-    io.emit('entity update', objects[data.id])
+    io.emit('tag update', objects[data.id])
   });
 
   socket.on('entity update', (data) => {
@@ -197,6 +200,24 @@ io.on('connection', (socket) => {
 
   socket.on('chat message', (msg) => {
     io.emit('chat message', msg);
+  });
+
+  socket.on('vote exit', (playerID) => {
+    console.log("Voted to Exit")
+    exitVotes[playerID] = true;
+    // Check if game should end
+    let counter = 0
+    for (let property in exitVotes) {
+      counter += 1
+    }
+    console.log("Exit vote", counter)
+    if (counter > players - 1 && counter >= 2) {
+      currentGame = -1
+      io.emit('game over', objects[playerID])
+    } else {
+      console.log("Updating Votes")
+      io.emit('update exit votes', "Exit " + counter + "/" + players)
+    }
   });
 
   socket.on('disconnect', () => {

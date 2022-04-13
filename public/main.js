@@ -423,6 +423,7 @@ const drawObjects = () => {
               objects[property].img = 11
               objects[property].tag = "Zombie"
               socket.emit('entity update', objects[property]);
+              socket.emit('tag update', objects[property]);
               updateScoreboard()
             }
           }
@@ -539,9 +540,10 @@ socket.on('chat message', function(msg) {
 });
 
 socket.on('tag update', function(data) {
-  if (data.id != localData.id) {
-    objects[data.id].tag = data.tag
-  }
+
+  objects[data.id].tag = data.tag
+  updateScoreboard()
+  
 })
 
 socket.on('entity update', function(data) {
@@ -610,6 +612,7 @@ socket.on('start game', function(gameID) {
 
   // Hide Menus
   localData.gameToggle = true
+  document.getElementById("exit").innerHTML= "Exit"
   document.getElementById("exit").style.display = "block"
   document.getElementById("scoreboard").style.display = "block"
   document.getElementById("game-options").style.display = "none"
@@ -633,6 +636,7 @@ socket.on('game over', function(winner) {
   // Reshow proper containters
   localData.colorToggle = true;
   gameData.currentGame = -1;
+  document.getElementById("exit").style.display = "none"
   document.getElementById("color-selected-container").style.display = "block"
   document.getElementById("game-selector").style.display = "block"
   document.getElementById("scoreboard").style.display = "none"
@@ -667,3 +671,12 @@ socket.on('set target', (targetData) => {
   updateScoreboard()
 });
 
+
+function voteExit() {
+  socket.emit('vote exit', localData.id);
+}
+
+socket.on('update exit votes', (exitText) => {
+  console.log("Trying to update votes")
+  document.getElementById("exit").innerHTML = exitText
+});
