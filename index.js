@@ -149,16 +149,14 @@ io.on('connection', (socket) => {
   socket.on('tag update', (data) => {
     // data.id = socket.id
     objects[data.id].tag = data.tag
-    objects[data.id].y = data.y
-    objects[data.id].img = data.img
     io.emit('entity update', objects[data.id])
   });
 
   socket.on('entity update', (data) => {
     // data.id = socket.id
-    objects[data.id] = data
-    // objects[data.id].y = data.y
-    // objects[data.id].img = data.img
+    objects[data.id].x = data.x
+    objects[data.id].y = data.y
+    objects[data.id].img = data.img
     io.emit('entity update', objects[data.id])
   });
 

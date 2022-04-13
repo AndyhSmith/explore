@@ -530,13 +530,25 @@ socket.on('chat message', function(msg) {
   document.getElementById("chat-toggle").innerHTML = "▲ Chat (" + localData.newMessages + " Unread)"
 });
 
+socket.on('tag update', function(data) {
+  if (data.id != localData.id) {
+    objects[data.id].tag = data.tag
+  }
+})
+
 socket.on('entity update', function(data) {
 
   if (data.id != localData.id) {
-    objects[data.id] = data
+    objects[data.id].x = data.x
+    objects[data.id].dir = data.dir
+    objects[data.id].y = data.y
+    objects[data.id].img = data.img
   } 
   
   if (gameData.currentGame == 1 && objects[localData.id].img == 7 && data.img == 11) {   // Convert to zombie
+    objects[data.id].x = data.x
+    objects[data.id].dir = data.dir
+    objects[data.id].y = data.y
     objects[data.id].img = data.img
     updateScoreboard()
 
