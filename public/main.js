@@ -399,7 +399,7 @@ const drawObjects = () => {
         ctx.stroke();
       }
 
-      if (checkCollision(gameData.target, objects[localData.id])) {
+      if (checkCollision(gameData.target, objects[localData.id]) && gameData.collectCooldown) {
         objects[localData.id].tag += 1;
         socket.emit('collect target', objects[localData.id]);
         updateScoreboard()
