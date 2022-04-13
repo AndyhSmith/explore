@@ -610,6 +610,7 @@ socket.on('start game', function(gameID) {
 
   // Hide Menus
   localData.gameToggle = true
+  document.getElementById("exit").style.display = "block"
   document.getElementById("scoreboard").style.display = "block"
   document.getElementById("game-options").style.display = "none"
   document.getElementById("game-selector").style.display = "none"
