@@ -151,7 +151,23 @@ io.on('connection', (socket) => {
   socket.on('tag update', (data) => {
     // data.id = socket.id
     objects[data.id].tag = data.tag
+
     io.emit('tag update', objects[data.id])
+
+    if (currentGame == 1) {
+      let gameOver = true;
+      // io.emit('tag update', objects)
+      for (let property in objects) {
+        if (objects[property].img != 11) {
+          gameOver = false;
+          break;
+        }
+      }
+      if (gameOver) {
+        io.emit('game over', objects[data])
+        currentGame = -1
+      } 
+    }
   });
 
   socket.on('entity update', (data) => {
@@ -184,18 +200,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('check game over', (data) => {
-    let gameOver = true;
-    // io.emit('tag update', objects)
-    for (let property in objects) {
-      if (objects[property].img != 11) {
-        gameOver = false;
-        break;
-      }
-    }
-    if (gameOver) {
-      io.emit('game over', objects[data])
-      currentGame = -1
-    } 
+    
   });
 
   socket.on('chat message', (msg) => {

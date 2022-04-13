@@ -558,9 +558,6 @@ socket.on('entity update', function(data) {
   if (gameData.currentGame == 1 && objects[localData.id].img == 7 && data.img == 11) {   // Convert to zombie
     objects[data.id].img = data.img
     updateScoreboard()
-
-    // check if game over
-    socket.emit('check game over', localData.id);
   } 
 });
 
