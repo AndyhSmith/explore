@@ -109,7 +109,8 @@ let camera = {
 let gameData = {
   currentGame: -1,
   target: {},
-  cageSize: 1000
+  cageSize: 1000,
+  collectCooldown: true,
 }
 
 
@@ -291,6 +292,10 @@ const update = () => {
   
 };
 
+function resetCollectCooldown() {
+  gameData.collectCooldown = true;
+}
+
 function drawEntity(entity) {
   // Draw Name
   ctx.font = '20px serif';
@@ -398,6 +403,8 @@ const drawObjects = () => {
         objects[localData.id].tag += 1;
         socket.emit('collect target', objects[localData.id]);
         updateScoreboard()
+        gameData.collectCooldown = false;
+        setTimeout(function() { resetCollectCooldown(); }, 1000);
       }
     }
     if (gameData.currentGame == 1) { // zombies
@@ -524,17 +531,20 @@ socket.on('chat message', function(msg) {
 });
 
 socket.on('entity update', function(data) {
+  objects[data.id].tag = data.tag
 
   if (data.id != localData.id) {
     objects[data.id] = data
-  } else if (gameData.currentGame == 1 && objects[localData.id].img == 7 && data.img == 11) {   // Convert to zombie
+  } 
+  
+  if (gameData.currentGame == 1 && objects[localData.id].img == 7 && data.img == 11) {   // Convert to zombie
     objects[data.id].img = data.img
     updateScoreboard()
 
     // check if game over
     socket.emit('check game over', localData.id);
-
-  }
+  } 
+  
 
 });
 
@@ -566,7 +576,7 @@ socket.on('start game', function(gameID) {
   gameData.currentGame = gameID
   if (gameID == 0) {
     document.getElementById("game-message-title").innerHTML = "Target Chaser"
-    document.getElementById("game-message-info").innerHTML = "Be the first person to reach a target 5 times."
+    document.getElementById("game-message-info").innerHTML = "Be the first player to reach a target 5 times."
     setTimeout(function() { hideGameScreen(); }, 5000);
 
   
@@ -633,9 +643,12 @@ socket.on('connect', () => {
   
 });
 
+socket.on('update scoreboard', () => {
+  updateScoreboard()
+});
+
 socket.on('set target', (targetData) => {
   gameData.target = targetData  
   updateScoreboard()
-  console.log(targetData, "Hey!")
 });
 

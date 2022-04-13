@@ -23,6 +23,7 @@ let target = {
   y: 0,
   width: 200,
   height: 200,
+  id: 0
 }
 
 // const io = new Server(server);
@@ -58,8 +59,8 @@ function removeVote(id) {
 
 function placeTarget() {
   console.log("Setting Target Position")
-  target.x = Math.random() * 4000 - 2000
-  target.y = Math.random() * 4000 - 2000
+  target.x = Math.floor(Math.random() * 4000 - 2000)
+  target.y = Math.floor(Math.random() * 4000 - 2000)
   io.emit('set target', target)
 }
 
@@ -169,6 +170,7 @@ io.on('connection', (socket) => {
       io.emit('entity update', data)
       placeTarget()
     }
+    
   });
 
   socket.on('check game over', (data) => {
@@ -197,6 +199,10 @@ io.on('connection', (socket) => {
     io.emit('entity delete', socket.id);
     console.log('user disconnected');
   });
+
+  if (currentGame == 0) {
+    io.emit('set target', target);
+  }
 
 });
 
