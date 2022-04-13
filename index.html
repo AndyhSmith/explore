@@ -42,9 +42,9 @@
       .game {cursor: pointer; width: 70%; border: 1px solid white; background-color: #333; margin: 5px; padding: 5px; margin-left: auto; margin-right: auto;}
       .game:hover {opacity: .6;}
       #game-message {position: fixed; width: 100%; height: 100%; left: 0px; top: 0px; text-align:center;display:none;z-index: 3;}
-      #game-message-title {color: red; font-size: 100px;font-weight:bold;}
+      #game-message-title {color: red; font-size: 60px;font-weight:bold;}
       #game-message-info {color: red; font-size: 40px;}
-      #scoreboard {position: fixed; top: 20px; left: 20px; border: 2px solid white; width: 120px; max-height: 200px; border-radius: 5px; color:white; text-align:center; padding: 5px;display:none;}
+      #scoreboard {position: fixed; top: 20px; left: 20px; border: 2px solid white; max-width: 150px; max-height: 200px; border-radius: 5px; color:white; text-align:center; padding: 5px;display:none;}
       #scoreboard-contents {text-align: left; width: 100%; padding-left: 5px;}
 
       html {margin: 0px;padding: 0px;}
@@ -115,7 +115,7 @@
     <img class="au" id="au-yellow" src="https://andyhsmith.com/images/au/au_yellow.png">
     <img class="au" id="au-yellow-l" src="https://andyhsmith.com/images/au/au_yellow_l.png">
 
-
+    <img class="au"  id="target-img" src="https://andyhsmith.com/images/target.png">
     <img class="au" id="background" src="https://andyhsmith.com/images/hex.png">
     <!-- https://i.pinimg.com/originals/da/f1/8e/daf18e7abe71f504d812ce5c270fd9aa.png -->
     <!-- https://i.pinimg.com/originals/da/04/af/da04af814cd09becef58c9084a2d8754.png -->
@@ -156,7 +156,7 @@
       <div class="game" onclick="toggleGameMenu()">Close</div>
     </div>
     
-    <div id="chat-toggle" onclick="showToggle()">▲ Chat</div>
+    <div id="chat-toggle" class="unselectable" onclick="showToggle()">▲ Chat</div>
 
     <div id="name-container">
       <span style="color: white;"></span>
@@ -164,7 +164,7 @@
       <span style="color: white;">Connect multiple devices to this site.</span>
     </div>
     
-    <div id="chat">
+    <div id="chat" class="unselectable">
       <div id="chat-toggle2" onclick="hideToggle()">▼ Chat</div>
       <div id="message-container"><ul id="messages"></ul></div>
       <form id="form" action=""><input id="input" autocomplete="off" /><button>Send</button></form>

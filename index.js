@@ -21,9 +21,8 @@ let votes = {
 let target = {
   x: 0,
   y: 0,
-  width: 200,
-  height: 200,
-  id: 0
+  width: 167,
+  height: 146,
 }
 
 // const io = new Server(server);
@@ -59,8 +58,8 @@ function removeVote(id) {
 
 function placeTarget() {
   console.log("Setting Target Position")
-  target.x = Math.floor(Math.random() * 4000 - 2000)
-  target.y = Math.floor(Math.random() * 4000 - 2000)
+  target.x = (Math.floor(Math.random() * 8 - 4) * 512) + 1
+  target.y = Math.floor(Math.random() * 8 - 4) * 445
   io.emit('set target', target)
 }
 

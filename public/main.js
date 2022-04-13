@@ -78,6 +78,7 @@ let colors = {
 }
 
 let IMG_BACKGROUND = document.getElementById('background')
+let IMG_TARGET = document.getElementById("target-img")
 
 
 const keyState = {};
@@ -111,8 +112,8 @@ let gameData = {
   target: {},
   cageSize: 1000,
   collectCooldown: true,
+  
 }
-
 
 const localData = {
   playerID: 0,
@@ -355,12 +356,18 @@ const drawObjects = () => {
   if (gameData.currentGame != -1) {
     if (gameData.currentGame == 0) { // Target Chase
       // Draw Target
-      ctx.fillStyle = "#F00";
-      ctx.fillRect(gameData.target.x + camera.x, gameData.target.y + camera.y, gameData.target.width, gameData.target.height);
-      ctx.fillStyle = "#FFF";
-      ctx.fillRect(gameData.target.x  + camera.x + (gameData.target.width * .17), gameData.target.y + camera.y + (gameData.target.height * .17), gameData.target.width * .66, gameData.target.height * .66);
-      ctx.fillStyle = "#F00";
-      ctx.fillRect(gameData.target.x + camera.x + (gameData.target.width * .33), gameData.target.y + camera.y + (gameData.target.height * .33), gameData.target.width * .33, gameData.target.height * .33);
+      // ctx.fillStyle = "#F00";
+      // ctx.fillRect(gameData.target.x + camera.x, gameData.target.y + camera.y, gameData.target.width, gameData.target.height);
+      // ctx.fillStyle = "#FFF";
+      // ctx.fillRect(gameData.target.x  + camera.x + (gameData.target.width * .17), gameData.target.y + camera.y + (gameData.target.height * .17), gameData.target.width * .66, gameData.target.height * .66);
+      // ctx.fillStyle = "#F00";
+      // ctx.fillRect(gameData.target.x + camera.x + (gameData.target.width * .33), gameData.target.y + camera.y + (gameData.target.height * .33), gameData.target.width * .33, gameData.target.height * .33);
+
+      ctx.drawImage(IMG_TARGET, gameData.target.x + camera.x, gameData.target.y +camera.y, 167, 146);
+     
+      // ctx.drawImage(IMG_BACKGROUND, i * localData.gap + (camera.x % localData.gap), j * localData.gapy + (camera.y % localData.gapy), localData.gap, localData.gapy);
+
+
 
       if (Math.abs(gameData.target.x + (gameData.target.width / 2) - (objects[localData.id].x + 30)) > localData.RADAR_ACTIVATION_DISTANCE + 100|| 
            Math.abs(gameData.target.y + (gameData.target.height / 2) - (objects[localData.id].y + 36)) > localData.RADAR_ACTIVATION_DISTANCE + 100) {
@@ -377,6 +384,7 @@ const drawObjects = () => {
         let pY2= Math.cos(angle) * (localData.RADAR_DISTANCE + 20 + 30)
       
 
+      
         ctx.lineWidth = 15;
         ctx.strokeStyle = "#F00";
         ctx.beginPath();
@@ -546,9 +554,6 @@ socket.on('entity update', function(data) {
   } 
   
   if (gameData.currentGame == 1 && objects[localData.id].img == 7 && data.img == 11) {   // Convert to zombie
-    objects[data.id].x = data.x
-    objects[data.id].dir = data.dir
-    objects[data.id].y = data.y
     objects[data.id].img = data.img
     updateScoreboard()
 
